@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS flask_notes;
+
+CREATE DATABASE flask_notes;
