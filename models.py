@@ -61,29 +61,29 @@ class User(db.Model):
             return u
         else:
             return False
-    
-    # note = db.relationship('Note', backref='users')
 
-# class Note(db.Model):
-#     """Note."""
+    note = db.relationship('Note', backref='users')
 
-#     id = db.Column(
-#         db.Integer,
-#         primary_key=True,
-#         autoincrement=True)
-    
-#     title = db.Column(
-#         db.String(100),
-#         nullable=False)
+class Note(db.Model):
+    """Note."""
 
-#     content = db.Column(
-#         db.Text(),
-#         nullable=False)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
 
-#     owner_username = db.Column(
-#         db.String(20),
-#         db.Foreign_Key('users.username'))
+    title = db.Column(
+        db.String(100),
+        nullable=False)
 
-    
-    
+    content = db.Column(
+        db.Text(),
+        nullable=False)
+
+    owner_username = db.Column(
+        db.String(20),
+        db.ForeignKey('users.username'))
+
+
+
 
