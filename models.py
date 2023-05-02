@@ -41,7 +41,7 @@ class User(db.Model):
         nullable=False)
 
     @classmethod
-     def register(cls, username, password, email, first_name, last_name):
+    def register(cls, username, password, email, first_name, last_name):
         """Register user w/hashed password & return user."""
 
         hashed = bcrypt.generate_password_hash(password).decode('utf8')
@@ -49,3 +49,17 @@ class User(db.Model):
         # return instance of user w/username and hashed pwd
         return cls(username=username, password=hashed, email=email, first_name=first_name, last_name=last_name)
 
+    @classmethod
+    def authenticate(cls, username, pwd):
+        """Validate that user exists & password is correct.
+
+        Return user if valid; else return False.
+        """
+
+        u = cls.query.filter_by(username=username).one_or_none()
+
+        if u and bcrypt.check_password_hash(u.password, pwd):
+            # return user instance
+            return u
+        else:
+            return False

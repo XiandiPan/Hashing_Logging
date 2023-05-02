@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import connect_db, db, User
-# from forms import 
+from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -43,6 +43,34 @@ def load_register_page():
         return redirect(f'/users/{user.username}')
 
     else:
-        #FIXME: MAKE THE HTML FOR THIS TEMPLATE
-        return render_template('', form = form)
+        return render_template('register_form.html', form = form)
 
+@app.route('/login', methods=['POST', 'GET'])
+def login_user():
+    """Display user login  html template and validate user"""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        name = form.username.data
+        pwd = form.password.data
+
+        # authenticate will return a user or False
+        user = User.authenticate(name, pwd)
+
+        if user:
+            session["username"] = user.username  # keep logged in
+            return redirect(f"/users/{user.username}")
+
+        else:
+            form.username.errors = ["Bad name/password"]
+
+    return render_template("login_form.html", form=form)
+@app.get('/users/<username>')
+def show_user(username):
+
+    if "username" not in session:
+        flash("You must be logged in to view!")
+        return redirect("/")
+    else:
+        return render_template("user.html")

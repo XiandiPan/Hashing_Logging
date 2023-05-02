@@ -7,13 +7,11 @@ class RegisterForm(FlaskForm):
 
     username = StringField(
         "Username",
-        validators=[InputRequired()]
-    )
+        validators=[InputRequired()])
 
     password = PasswordField(
         "Password",
-        validators=[InputRequired()]
-    )
+        validators=[InputRequired()])
 
     email = EmailField(
         "Email Adress",
@@ -27,4 +25,15 @@ class RegisterForm(FlaskForm):
         "Last Name",
         validators=[InputRequired()])
 
-    
+class LoginForm(FlaskForm):
+    """Form for registering a user."""
+
+    username = StringField(
+        "Username",
+        validators=[InputRequired()])
+
+    password = PasswordField(
+        "Password",
+        validators=[InputRequired()])
+
+
