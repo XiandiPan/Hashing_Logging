@@ -14,7 +14,7 @@ def connect_db(app):
     db.init_app(app)
 
 class User(db.Model):
-    """Site user."""
+    """User."""
 
     __tablename__ = "users"
 
@@ -46,7 +46,6 @@ class User(db.Model):
 
         hashed = bcrypt.generate_password_hash(password).decode('utf8')
 
-        # return instance of user w/username and hashed pwd
         return cls(username=username, password=hashed, email=email, first_name=first_name, last_name=last_name)
 
     @classmethod
@@ -59,7 +58,32 @@ class User(db.Model):
         u = cls.query.filter_by(username=username).one_or_none()
 
         if u and bcrypt.check_password_hash(u.password, pwd):
-            # return user instance
             return u
         else:
             return False
+    
+    # note = db.relationship('Note', backref='users')
+
+# class Note(db.Model):
+#     """Note."""
+
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True,
+#         autoincrement=True)
+    
+#     title = db.Column(
+#         db.String(100),
+#         nullable=False)
+
+#     content = db.Column(
+#         db.Text(),
+#         nullable=False)
+
+#     owner_username = db.Column(
+#         db.String(20),
+#         db.Foreign_Key('users.username'))
+
+    
+    
+

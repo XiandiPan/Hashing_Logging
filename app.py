@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
 from models import connect_db, db, User
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, CSRFProtectForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -23,7 +23,10 @@ def redirect_to_register():
 
 @app.route('/register', methods=['POST', 'GET'])
 def load_register_page():
-    """Display register html template and handle form submit to database"""
+    """Display register html template or handle form submit to database"""
+
+    #if user found in session currently dont bother runnin code redirect to their
+    # own page
 
     form = RegisterForm()
 
@@ -47,7 +50,10 @@ def load_register_page():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login_user():
-    """Display user login  html template and validate user"""
+    """Display user login  html template or validate user"""
+
+    #if user found in session currently dont bother runnin code redirect to their
+    # own page
 
     form = LoginForm()
 
@@ -66,11 +72,29 @@ def login_user():
             form.username.errors = ["Bad name/password"]
 
     return render_template("login_form.html", form=form)
+
 @app.get('/users/<username>')
 def show_user(username):
+    """Loads individual user page"""
 
-    if "username" not in session:
+    if "username" not in session or session["username"] != username:
         flash("You must be logged in to view!")
         return redirect("/")
-    else:
-        return render_template("user.html")
+    
+    form = CSRFProtectForm()
+    # user = User.query.get_or_404(username)
+    return render_template("user.html", form=form)
+
+
+#FIXME: rearrange routes to organize them, auth, user, notes section
+
+@app.post('/logout')
+def logout_user():
+    """Will log out user"""
+
+    form = CSRFProtectForm()
+
+    if form.validate_on_submit():
+        session.pop("username", None)
+
+    return redirect("/")
