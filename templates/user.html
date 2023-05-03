@@ -7,12 +7,17 @@
 
   <ul>
     {%for note in notes%}
-    
+
     <li>
-        <a href="/notes/{{note.id}}/delete"><i class="bi bi-trash trash"></i></a>
+      <form method="POST" action="/notes/{{note.id}}/delete">
+      {{ form.hidden_tag() }}
+       <button type="submit"><i class="bi bi-trash trash"></i></button>
+      </form>
+
         <a href="/notes/{{note.id}}/update"><i class="bi bi-pencil-square edit"></i></a>
         {{note.title}}
     </li>
+
 
   {% endfor %}
   </ul>

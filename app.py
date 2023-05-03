@@ -141,9 +141,9 @@ def add_notes(username):
 
         note = Note(
             title=title,
-            content=content, 
+            content=content,
             owner_username=owner_username)
-            
+
         db.session.add(note)
         db.session.commit()
 
@@ -176,3 +176,21 @@ def update_notes(note_id):
         return render_template('update_note_form.html', form=form, note=note)
 
 
+@app.post('/notes/<int:note_id>/delete')
+def delete_note(note_id):
+    """delete note and redirect to the user page"""
+
+    form = CSRFProtectForm()
+    note = Note.query.get_or_404(note_id)
+
+    print("\n", "note_Username",note.owner_username, "\n")
+
+    if form.validate_on_submit():
+
+        db.session.delete(note)
+        db.session.commit()
+
+        return redirect(f'/users/{note.owner_username}')
+    else:
+
+        return render_template("user.html",form=form,note=note)
