@@ -94,7 +94,6 @@ def logout_user():
 
 
 
-# FIXME: rearrange routes to organize them, auth, user, notes section
 ##############################################################################
 #user route
 
@@ -112,9 +111,6 @@ def show_user(username):
     # user = User.query.get_or_404(username)
     return render_template("user.html", form=form,user=user,notes=notes)
 
-##############################################################################
-#notes route
-
 @app.post('/users/<username>/delete')
 def delete_user(username):
     """delete registered user and redirect to the root rout"""
@@ -130,6 +126,8 @@ def delete_user(username):
 
     return redirect('/')
 
+##############################################################################
+#notes route
 
 @app.route('/users/<username>/notes/add', methods=['POST', 'GET'])
 def add_notes(username):
@@ -139,8 +137,13 @@ def add_notes(username):
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
+        owner_username = username
 
-        note = Note(title=title,content=content)
+        note = Note(
+            title=title,
+            content=content, 
+            owner_username=owner_username)
+            
         db.session.add(note)
         db.session.commit()
 
@@ -149,5 +152,27 @@ def add_notes(username):
     else:
 
         return render_template("note_form.html", form=form)
+
+@app.route('/notes/<int:note_id>/update', methods=['POST', 'GET'])
+def update_notes(note_id):
+
+    note = Note.query.get_or_404(note_id)
+    form = NoteForm(obj=note)
+
+    print('\n note =>', note.owner_username, '\n')
+
+    if form.validate_on_submit():
+        note.title = form.title.data
+        note.content = form.content.data
+
+        note.title = note.title
+        note.content = note.content
+
+        db.session.commit()
+
+        return redirect(f"/users/{note.owner_username}")
+
+    else:
+        return render_template('update_note_form.html', form=form, note=note)
 
 

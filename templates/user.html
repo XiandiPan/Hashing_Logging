@@ -4,37 +4,35 @@
 
   <h1 class="display-4">Welcome to {{user.username}} </h1>
   <h2>Notes</h2>
+
   <ul>
-  {%for note in notes%}
-
-  <li>{{note.title}}</li>
-
+    {%for note in notes%}
+    
+    <li>
+        <a href="/notes/{{note.id}}/delete"><i class="bi bi-trash trash"></i></a>
+        <a href="/notes/{{note.id}}/update"><i class="bi bi-pencil-square edit"></i></a>
+        {{note.title}}
+    </li>
 
   {% endfor %}
   </ul>
-
 
   <form method="POST" action="/logout">
     {{ form.hidden_tag() }}
 
     <button type="submit" class="btn btn-primary">Logout</button>
-
   </form>
 
   <form method="POST" action="/users/{{user.username}}/delete">
     {{ form.hidden_tag() }}
 
     <button type="submit" class="btn btn-primary">Delete User</button>
-
   </form>
 
   <form method="get" action="/users/{{user.username}}/notes/add">
     {{ form.hidden_tag() }}
 
     <button type="submit" class="btn btn-primary">Add Note</button>
-
   </form>
-
-
 
 {% endblock %}

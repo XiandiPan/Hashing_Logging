@@ -62,7 +62,6 @@ class User(db.Model):
         else:
             return False
 
-    note = db.relationship('Note', backref='users')
 
 class Note(db.Model):
     """Note."""
@@ -80,10 +79,12 @@ class Note(db.Model):
         db.Text(),
         nullable=False)
 
+    #MAKE NOT NULLABLE FOR FUTURE USE 
     owner_username = db.Column(
         db.String(20),
         db.ForeignKey('users.username'))
 
+    user = db.relationship('User', backref='notes')
 
 
 

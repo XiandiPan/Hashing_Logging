@@ -1,0 +1,12 @@
+i {
+    width: 30px;
+    height: 30px;
+}
+
+.edit {
+    color: blue;
+}
+
+.trash{
+    color: red;
+}
